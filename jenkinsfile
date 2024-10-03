@@ -2,16 +2,24 @@ pipeline {
     agent any
     
     environment {
-        // Specify your environment variables
+        // Specify environment variables if needed
         NODE_ENV = 'production'
     }
 
+    options {
+        // Ensure that we do not fail too quickly on the first error
+        retry(2)
+    }
+
     stages {
-        // Checkout the repository
+        // Checkout the repository from the correct branch
         stage('Checkout') {
             steps {
-                // Clone the repository containing the React app
-                git 'https://github.com/your-repo/weather-app.git'  // Replace with your repo URL
+                script {
+                    // Fetch from the 'main' branch, adjust if you use a different branch name
+                    checkout([$class: 'GitSCM', branches: [[name: '*/main']], 
+                              userRemoteConfigs: [[url: 'https://github.com/your-username/weather-app.git']]])
+                }
             }
         }
 
@@ -26,7 +34,7 @@ pipeline {
             }
         }
 
-        // Run tests if you have any set up (e.g., Jest tests)
+        // Run tests (optional, remove if you have no tests set up)
         stage('Test') {
             steps {
                 script {
@@ -43,13 +51,12 @@ pipeline {
             }
         }
 
-        // Deploy stage (this example is for a simple S3 bucket or Docker deployment)
+        // Deploy stage (can be customized based on your deployment strategy)
         stage('Deploy') {
             steps {
                 script {
                     echo "Deploying the application..."
-                    // You can replace this with your own deployment process, e.g., AWS S3, Docker, or a server copy
-                    // Example for Docker:
+                    // Example for Docker deployment:
                     // sh 'docker build -t weather-app .'
                     // sh 'docker run -d -p 3000:3000 weather-app'
                 }
@@ -62,7 +69,7 @@ pipeline {
             echo 'Pipeline executed successfully.'
         }
         failure {
-            echo 'Pipeline failed. Check logs.'
+            echo 'Pipeline failed. Please check the logs for details.'
         }
     }
 }
