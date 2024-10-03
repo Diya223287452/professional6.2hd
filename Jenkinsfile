@@ -20,9 +20,9 @@ pipeline {
         stage('Install & Build') {
             steps {
                 script {
-                    // Install npm dependencies and build the application
-                    sh 'npm install'
-                    sh 'npm run build'
+                    // Run npm install and npm build (assumes Node.js is installed)
+                    bat 'npm install'  // Use 'bat' for Windows to run npm
+                    bat 'npm run build'  // This is assuming you're using npm. Adjust if needed.
                 }
             }
         }
@@ -30,8 +30,8 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    // Run npm tests
-                    sh 'npm test'
+                    // Run npm tests (if any exist)
+                    bat 'npm test'
                 }
             }
         }
@@ -46,7 +46,7 @@ pipeline {
             steps {
                 script {
                     echo "Deploying the application..."
-                    // Add your deployment steps here
+                    // Add your deployment steps here, adjust for Windows if necessary
                 }
             }
         }
