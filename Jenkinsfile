@@ -30,8 +30,8 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    // Run npm tests (if any exist)
-                    bat 'npm test'
+                    // Add the --passWithNoTests flag to ensure the test stage doesn't fail if no tests are found
+                    bat 'npm test -- --passWithNoTests'
                 }
             }
         }
