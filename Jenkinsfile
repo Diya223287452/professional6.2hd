@@ -2,28 +2,21 @@ pipeline {
     agent any
     
     environment {
-        // Specify environment variables if needed
         NODE_ENV = 'production'
     }
 
-    options {
-        // Ensure that we do not fail too quickly on the first error
-        retry(2)
-    }
-
     stages {
-        // Checkout the repository from the correct branch
         stage('Checkout') {
             steps {
                 script {
-                    // Fetch from the 'main' branch, adjust if you use a different branch name
+                    // Make sure this points to the correct branch, 'main' in this case
                     checkout([$class: 'GitSCM', branches: [[name: '*/main']], 
-                              userRemoteConfigs: [[url: 'https://github.com/your-username/weather-app.git']]])
+                              userRemoteConfigs: [[url: 'https://github.com/Diya223287452/professional6.2hd.git',
+                                                   credentialsId: 'your-credentials-id']]])  // Replace with your actual credentials ID
                 }
             }
         }
 
-        // Install dependencies and build the React application
         stage('Install & Build') {
             steps {
                 script {
@@ -34,7 +27,6 @@ pipeline {
             }
         }
 
-        // Run tests (optional, remove if you have no tests set up)
         stage('Test') {
             steps {
                 script {
@@ -44,21 +36,17 @@ pipeline {
             }
         }
 
-        // Archive build artifacts
         stage('Archive Artifacts') {
             steps {
                 archiveArtifacts artifacts: 'build/**', allowEmptyArchive: true
             }
         }
 
-        // Deploy stage (can be customized based on your deployment strategy)
         stage('Deploy') {
             steps {
                 script {
                     echo "Deploying the application..."
-                    // Example for Docker deployment:
-                    // sh 'docker build -t weather-app .'
-                    // sh 'docker run -d -p 3000:3000 weather-app'
+                    // Add your deployment steps here
                 }
             }
         }
